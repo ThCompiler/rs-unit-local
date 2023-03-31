@@ -73,20 +73,30 @@ impl Generate for Describe {
                 )
             })
             .collect::<Vec<_>>();
+        if self.setup_all.is_empty() && self.teardown_all.is_empty() {
+            let describe_block = quote_spanned! {ident.span()=>
+            mod #ident {
+                use super::*;
 
-        let describe_block = quote_spanned! {ident.span()=>
+                #(#tests)*
+            }
+        };
+
+            describe_block
+        } else {
+            let describe_block = quote_spanned! {ident.span()=>
             mod #ident {
                 use super::*;
                 use std::sync::Once;
-                
-                #[warn(dead_code)]
+
                 static INIT: Once = Once::new();
 
                 #(#tests)*
             }
         };
 
-        describe_block
+            describe_block
+        }
     }
 }
 
@@ -181,7 +191,7 @@ impl Generate for Setup {
         let ident = &self.ident;
         let block = &self.content;
 
-        let setup_block = quote_spanned! (ident.span()=> #block);
+        let setup_block = quote_spanned!(ident.span()=> #block);
 
         setup_block
     }
@@ -205,7 +215,7 @@ impl Generate for Teardown {
         let ident = &self.ident;
         let block = &self.content;
 
-        let teardown_block = quote_spanned! (ident.span()=> #block);
+        let teardown_block = quote_spanned!(ident.span()=> #block);
 
         teardown_block
     }
