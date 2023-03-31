@@ -78,7 +78,8 @@ impl Generate for Describe {
             mod #ident {
                 use super::*;
                 use std::sync::Once;
-
+                
+                #[warn(dead_code)]
                 static INIT: Once = Once::new();
 
                 #(#tests)*
