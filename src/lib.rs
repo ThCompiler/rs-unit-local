@@ -48,3 +48,10 @@ pub fn rs_unit(input: TokenStream) -> TokenStream {
 }
 
 
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn small_test() {
+        assert_eq!(1, 1)
+    }
+}

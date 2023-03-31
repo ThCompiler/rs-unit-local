@@ -45,10 +45,10 @@ impl Parse for Root {
 pub struct Describe {
     pub ident: Ident,
     pub setup_all: TokenStream,
-    pub setup: TokenStream,
+    pub setup: Option<Setup>,
     pub tests: Vec<Test>,
     pub teardown_all: TokenStream,
-    pub teardown: TokenStream,
+    pub teardown: Option<Teardown>,
 }
 
 // Parses the Describe block. The pre- and postprocessing blocks are optional.
@@ -112,20 +112,14 @@ impl Parse for Describe {
             setup_all_stream = setup_all.generate();
         }
 
-        let mut setup_stream = TokenStream::new();
-        if let Some(setup) = setup {
-            setup_stream = setup.generate();
-        }
+        let setup_stream = setup;
 
         let mut teardown_all_stream = TokenStream::new();
         if let Some(teardown_all) = teardown_all {
             teardown_all_stream = teardown_all.generate();
         }
 
-        let mut teardown_stream = TokenStream::new();
-        if let Some(teardown) = teardown {
-            teardown_stream = teardown.generate();
-        }
+        let teardown_stream = teardown;
 
         Ok(Self {
             ident: Ident::new(&name, ident.span()),

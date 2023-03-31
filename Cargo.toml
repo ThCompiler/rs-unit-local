@@ -13,9 +13,9 @@ keywords = ["testing", "bdd", "tdd"]
 categories = ["development-tools", "development-tools::testing", "development-tools::profiling"]
 
 [dependencies]
-syn = { version = "^1", features = ["full", "extra-traits"]}
-quote = "^1"
-proc-macro2 = "^1"
+syn = { version = "*", features = ["full", "extra-traits"]}
+quote = "*"
+proc-macro2 = "*"
 
 [lib]
 path = "src/lib.rs"

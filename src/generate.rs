@@ -1,6 +1,8 @@
 //! Contains methods to generate the manipulated `Tokenstreams` based of the parsed AST.
 use proc_macro2::{Ident, TokenStream};
-use quote::quote_spanned;
+use quote::{quote_spanned, TokenStreamExt};
+use syn::Expr::Block;
+use syn::spanned::Spanned;
 
 use crate::keywords::{Describe, Root, Setup, SetupAll, Teardown, TeardownAll, Test};
 
@@ -10,9 +12,9 @@ pub trait Generate {
     fn generate_test(
         &self,
         _setup_all: &TokenStream,
-        _setup: &TokenStream,
+        _setup: &Option<Setup>,
         _teardown_all: &TokenStream,
-        _teardown: &TokenStream,
+        _teardown: &Option<Teardown>,
     ) -> TokenStream {
         TokenStream::new()
     }
@@ -136,9 +138,9 @@ impl Generate for Test {
     fn generate_test(
         &self,
         setup_all: &TokenStream,
-        setup: &TokenStream,
+        setup: &Option<Setup>,
         teardown_all: &TokenStream,
-        teardown: &TokenStream,
+        teardown: &Option<Teardown>,
     ) -> TokenStream {
         let sanitied_name = &self
             .name
@@ -149,26 +151,32 @@ impl Generate for Test {
         let new_ident = Ident::new(sanitied_name, self.ident.span());
 
         let setup_all = setup_all;
-        let setup = setup;
-        let block = &self.content;
+        let setup = setup.clone();
+        let mut block = self.content.clone();
         let teardown_all = teardown_all;
-        let teardown = teardown;
+        let teardown = teardown.clone();
+
+        if let Some(mut stp) = setup {
+            stp.content.stmts.append(&mut block.stmts);
+            block = stp.content;
+        }
+
+        if let Some(mut stp) = teardown {
+            block.stmts.append(&mut stp.content.stmts);
+        }
 
         let test_block = quote_spanned! {new_ident.span()=>
             #[test]
             fn #new_ident() {
                 #setup_all
 
-                #setup
-
                 #block
-
-                #teardown
 
                 #teardown_all
             }
         };
 
+        println!("{}", test_block);
         test_block
     }
 }
