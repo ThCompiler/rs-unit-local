@@ -49,6 +49,8 @@ impl Generate for Root {
 impl Generate for Suite {
     fn generate(&self) -> TokenStream {
         let ident = &self.ident;
+        let struct_ident = &self.suite_struct;
+        let struct_name = Ident::new(self.suite_struct_name.as_str(), proc_macro2::Span::call_site());
 
         let functions = &self.functions
             .iter()
@@ -62,11 +64,13 @@ impl Generate for Suite {
         let singleton_name = Ident::new(SINGLETON_NAME, proc_macro2::Span::call_site());
 
         let describe_block = quote_spanned! {ident.span()=>
-        mod #ident {
+        mod #struct_name {
             use super::*;
-            use #lib_name::#singleton_mod::#singleton_name;
 
-            static mut suite: #singleton_name<#ident> = #singleton_name::new();
+            use #lib_name::#singleton_mod::#singleton_name;
+            use std::sync::Mutex;
+
+            static SUITE: Mutex<#singleton_name<#struct_ident>> = Mutex::new(#singleton_name::new());
 
             #(#functions)*
         }
@@ -96,9 +100,9 @@ impl Generate for Func {
         let test_block = quote_spanned! {new_ident.span()=>
             #[test]
             fn #new_ident() {
-                suite.get().defer_mut().before_test();
-                suite.get().defer().#func;
-                suite.get().defer_mut().after_test();
+                SUITE.lock().unwrap().get_mut().before_test();
+                SUITE.lock().unwrap().get().#func();
+                SUITE.lock().unwrap().get_mut().after_test();
             }
         };
 

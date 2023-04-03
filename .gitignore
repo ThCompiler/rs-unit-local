@@ -3,3 +3,4 @@ Notes.md
 /target
 Cargo.lock
 .idea
+*/target

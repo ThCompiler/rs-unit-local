@@ -1,5 +1,5 @@
 [package]
-name = "run_tests"
+name = "run_tests_macro"
 version = "0.0.1"
 authors = ["TheCompiler <info@mariuswilms.dev>"]
 edition = "2021"
@@ -13,9 +13,11 @@ keywords = ["testing", "bdd", "tdd"]
 categories = ["development-tools", "development-tools::testing", "development-tools::profiling"]
 
 [dependencies]
-run_tests_macro = { path = "./run_tests_macro" }
+syn = { version = "*", features = ["full", "extra-traits"]}
+quote = "*"
+proc-macro2 = "*"
+convert_case = "0.6.0"
 
 [lib]
 path = "src/lib.rs"
-
-
+proc-macro = true

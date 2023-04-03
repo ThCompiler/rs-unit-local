@@ -13,7 +13,7 @@ pub struct Root {
     pub describes: Vec<Suite>,
 }
 
-// Parses all describe blocks within the `rs_unit!` macro.
+// Parses all describe blocks within the `rs_unit!` run_tests_macro.
 impl Parse for Root {
     fn parse(input: ParseStream) -> Result<Self> {
         let mut describes = Vec::<Suite>::new();

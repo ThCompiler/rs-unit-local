@@ -1,11 +1,14 @@
 <!-- markdownlint-disable MD033 MD041 -->
+
+<div style="color:Red" align="center">
+
+# Old readme from forked repository
+
+</div>
+
 <div align="center">
 
 # RsUnit
-
-![GitHub issues](https://img.shields.io/github/issues/mawilms/rs-unit)
-![Cargo Downloads](https://img.shields.io/crates/d/rs-unit)
-![Cargo Latest version](https://img.shields.io/crates/v/rs-unit)
 
 </div>
 
