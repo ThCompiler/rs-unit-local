@@ -16,7 +16,6 @@ pub fn run_tests(input_proc_macro: proc_macro::TokenStream) -> proc_macro::Token
         Err(err) => panic!("got error when parse input {}", err)
     };
     let code = root.generate();
-    println!("{}", code);
     code.into()
 }
 

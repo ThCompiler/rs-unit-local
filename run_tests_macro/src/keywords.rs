@@ -35,7 +35,7 @@ pub struct Suite {
     pub ident: Ident,
     pub suite_struct: Ident,
     pub suite_struct_name: String,
-    pub functions: Vec<Func>
+    pub functions: Vec<Func>,
 }
 
 // Parses the Suite block. The pre- and postprocessing blocks are optional.
@@ -53,14 +53,14 @@ impl Parse for Suite {
         funcs.into_iter().for_each(|ident| {
             let func = ident;
             let name_func = func.to_string().to_case(Case::Snake);
-            functions.push(Func{function: func, function_name: name_func});
+            functions.push(Func { function: func, function_name: name_func, struct_ident: suite_struct.clone() });
         });
 
         Ok(Self {
             ident,
             suite_struct,
             suite_struct_name,
-            functions
+            functions,
         })
     }
 }
@@ -68,6 +68,7 @@ impl Parse for Suite {
 // Describe block that contains the actual tests and any pre- and postprocessing blocks.
 #[derive(Debug)]
 pub struct Func {
+    pub struct_ident: Ident,
     pub function: Ident,
     pub function_name: String,
 }
