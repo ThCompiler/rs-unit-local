@@ -100,7 +100,7 @@ impl Generate for Func {
             fn #new_ident() {
                 let mut suite: #singleton_name<#struct_ident> = #singleton_name::new();
                 suite.get_mut().before_test();
-                suite.get().#func();
+                suite.get_mut().#func();
                 suite.get_mut().after_test();
             }
         };
